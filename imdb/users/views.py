@@ -1,5 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, reverse, HttpResponseRedirect
 from .forms import CustomUserCreationForm
+from django.contrib.auth import authenticate, login, logout
+
 
 def sign_up(request):
     """
@@ -14,15 +16,26 @@ def sign_up(request):
         if form.is_valid():
             form.save()
             # working on this shit
-            return HttpResponseRedirect(redirect('movies:home'))
+            return HttpResponseRedirect(reverse('movies:home'))
     else:
         form = CustomUserCreationForm()
     return render(request, 'users/signup.html', {'form': form})
 
 
-def login(request):
-    return
+def login_user(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            # Redirect to a success page.
+            return HttpResponseRedirect(reverse('users:signup'))
+    # Return an 'invalid login' error message.
+    return render(request, 'users/login.html')
 
 
-def logout(request):
-    return
+def logout_user(request):
+    logout(request)
+    # Redirect to a success page.
+    return HttpResponseRedirect(reverse('users:signup'))
