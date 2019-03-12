@@ -19,7 +19,7 @@ class Actors(models.Model):
 
 
 class Movies(models.Model):
-    title = models.CharField(max_length=150)
+    title = models.CharField(max_length=150, blank=False)
     description = models.TextField(blank=False)
     release_date = models.DateField()
     # category = models. 
