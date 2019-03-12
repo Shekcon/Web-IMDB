@@ -15,7 +15,6 @@ def sign_up(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            # working on this shit
             return HttpResponseRedirect(reverse('movies:home'))
     else:
         form = CustomUserCreationForm()
@@ -30,7 +29,7 @@ def login_user(request):
         if user is not None:
             login(request, user)
             # Redirect to a success page.
-            return HttpResponseRedirect(reverse('users:signup'))
+            return HttpResponseRedirect(reverse('movies:home'))
     # Return an 'invalid login' error message.
     return render(request, 'users/login.html')
 
@@ -38,4 +37,4 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     # Redirect to a success page.
-    return HttpResponseRedirect(reverse('users:signup'))
+    return HttpResponseRedirect(reverse('movies:home'))

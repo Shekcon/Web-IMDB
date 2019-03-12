@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # own
     'users.apps.UsersConfig',
+    'movies.apps.MoviesConfig'
 ]
 
 MIDDLEWARE = [
