@@ -15,7 +15,7 @@ def sign_up(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('movies:home'))
+            return HttpResponseRedirect(reverse('users:login'))
     else:
         form = CustomUserCreationForm()
     return render(request, 'users/signup.html', {'form': form})
@@ -37,4 +37,4 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     # Redirect to a success page.
-    return HttpResponseRedirect(reverse('movies:home'))
+    return render(request, 'users/logout.html')

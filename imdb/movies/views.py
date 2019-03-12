@@ -1,8 +1,12 @@
 from django.shortcuts import render, reverse
-
+from .forms import MovieForm
 
 def index(request):
-    return render(request, 'movies/index.html')
+    contents = {
+        "user": request.user,
+        "form": MovieForm()
+    }
+    return render(request, 'movies/index.html', contents)
 
 
 def view_actors(request):
