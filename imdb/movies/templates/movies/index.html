@@ -1,43 +1,43 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div class="container">
+<div class="container">
+    <br>
+    {% if user.is_authenticated %}
+    <h2>Movie</h2>
+    <hr>
+    <div class="row">
+        <div class="col-lg-10"></div>
+        <div class="col-lg-2">
+            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">New Movie</button>
+        </div>
         <br>
-        {% if user.is_authenticated %}
-            <h2>Movie</h2>
-            <hr>
-            <div class="row">
-                <div class="col-lg-10"></div>
-                <div class="col-lg-2">
-                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">New Movie</button>
-            </div>
-            <br>
-            </div>
-            {% for movie in movies_user %}
-                <div class="row">
-                    <div class="col-md-4">
-                        {% if movie.logo %}
-                        <a >
-                            <img class="img-fluid rounded" src="{{ movie.logo.url }}" >
-                        </a>
-                        {% endif %}
-                        
-                    </div>
-                    <div class="col-md-7">
-                        <h4>{{ movie.title }}</h4>
-                        <p>{{ movie.description }}</p>
-                    </div>
-                </div>
-                <hr>
-            {% endfor %}
-            <!-- Modal -->
-            <div id="myModal" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
+    </div>
+    {% for movie in movies_user %}
+    <div class="row">
+        <div class="col-md-4">
+            {% if movie.logo %}
+            <a>
+                <img class="img-fluid rounded" src="{{ movie.logo.url }}">
+            </a>
+            {% endif %}
+
+        </div>
+        <div class="col-md-7">
+            <h4>{{ movie.title }}</h4>
+            <p>{{ movie.description }}</p>
+        </div>
+    </div>
+    <hr>
+    {% endfor %}
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">New Movie</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    
+
                 </div>
                 <div class="modal-body">
                     <form method="POST" enctype="multipart/form-data">
@@ -45,17 +45,17 @@
                         {{ form.as_p }}
                         <button type="submit" class="btn btn-primary">Save</button>
                     </form>
-                    
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
-                </div>
-        
             </div>
-            </div>
-        {% else %}
-        <a href="{% url 'users:login' %}">Click here to log in.</a>
-        {% endif %}
+
+        </div>
     </div>
+    {% else %}
+    <a href="{% url 'users:login' %}">Click here to log in.</a>
+    {% endif %}
+</div>
 {% endblock %}
