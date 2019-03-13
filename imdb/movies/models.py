@@ -1,7 +1,6 @@
 from django.db import models
-
 # Create your models here.
-
+from django.utils import timezone
 
 class Actors(models.Model):
     GENDER = (
@@ -37,6 +36,24 @@ class Movies(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Comments(models.Model):
+    kind_of_comments = (
+        ('movie', 'Movie'),
+        ('actor', 'Actor')
+    )
+    kind = models.CharField(default=kind_of_comments, max_length=10)
+    text = models.TextField()
+    id_kind = models.IntegerField()
+    user = models.IntegerField()
+    date = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ["date"]
+
+    def __str__(self):
+        return self.text
 
 
 class Awards(models.Model):

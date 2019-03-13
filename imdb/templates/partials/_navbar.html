@@ -24,11 +24,7 @@
         <ul class="navbar-nav ml-auto">
 
           <li class="nav-item mr-3">
-            {% if not user.is_authenticated %}
-             <a class="nav-link" href="{% url 'users:login' %}">
-             <i class="fas fa-sign-in-alt"></i>
-              Login</a>
-            {% else %}
+            {% if user.is_authenticated %}
               <a class="nav-link" href="{% url 'users:logout' %}">
               <i class="fas fa-sign-in-alt"></i>
               Logout</a>

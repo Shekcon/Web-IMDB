@@ -1,26 +1,81 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
     <div class="container">
         <br>
         <br>
-        {% if user.is_authenticated %}
-            <div class="row">
-                <div class="col-lg-6">
-                    {% if movie.logo %}
-                    <img class="img-fluid rounded" src="{{ movie.logo.url }}" alt="">
-                    {% endif %}
+        <div class="row">
+            <div class="col-lg-6">
+                {% if movie.logo %}
+                <img class="img-fluid rounded" src="{{ movie.logo.url }}" alt="">
+                {% endif %}
+            </div>
+            <div class="col-lg-6">
+                <h3>{{ movie.title }}</h3>
+                <p> Release date: {{ movie.release_date }}</p>
+                <p> Category: {{ movie.category }}</p>
+                {% if actors %}
+                    <p>Actors: {{actors}}</p>
+                {% endif%}
+                <hr>
+                <p> {{ movie.description }}</p>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="comment-wrapper">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3>Comment</h3>
                 </div>
-                <div class="col-lg-6">
-                    <h3>{{ movie.title }}</h3>
-                    <p> Category: {{ movie.category }}</p>
-                    <p> Release date: {{ movie.release_date }}</p>
+                <div class="panel-body">
+                    <textarea class="form-control" placeholder="Write a comment..." rows="3"></textarea>
+                    <br>
+                    <div class="row">
+                        <div class="col-auto mr-auto"></div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-info">Post</button>
+                        </div>
+
+                    </div>
+                    
+                    <div class="clearfix"></div>
                     <hr>
-                    <p> {{ movie.description }}</p>
+                    <ul class="media-list">
+                        <li class="media">
+                            <div class="media-body">
+                                <div class="row">
+                                    <div class="col-auto mr-auto">
+                                        <strong class="text-success">{{user}}</strong>
+                                        <span class="text-muted pull-right">
+                                            <small class="text-muted">30 min ago</small>
+                                        </span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="btn-group">
+                                                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    ...
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="">Edit</a>
+                                                    <a class="dropdown-item btn-danger" href="">Delete</a>
+                                                </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    Lorem ipsum dolor sit amet
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        {% else %}
-            <a href="{% url 'users:login' %}">Click here to log in.</a>
-        {% endif %}
+        </div>
     </div>
 {% endblock %}
+{% block extrastyle %}
+{% endblock%}

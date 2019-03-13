@@ -3,16 +3,12 @@
 {% block content %}
     <div class="container">
         <br>
-        {% if user.is_authenticated %}
-            <h2>Update</h2>
-            <hr>
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Update</button>
-            </form>
-        {% else %}
-            <a href="{% url 'users:login' %}">Click here to log in.</a>
-        {% endif %}
+        <h2>Update</h2>
+        <hr>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
     </div>
 {% endblock %}
