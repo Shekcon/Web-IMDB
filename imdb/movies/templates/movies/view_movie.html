@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <br>
+        <br>
+        {% if user.is_authenticated %}
+            <div class="row">
+                <div class="col-lg-6">
+                    {% if movie.logo %}
+                    <img class="img-fluid rounded" src="{{ movie.logo.url }}" alt="">
+                    {% endif %}
+                </div>
+                <div class="col-lg-6">
+                    <h3>{{ movie.title }}</h3>
+                    <p> Category: {{ movie.category }}</p>
+                    <p> Release date: {{ movie.release_date }}</p>
+                    <hr>
+                    <p> {{ movie.description }}</p>
+                </div>
+            </div>
+        {% else %}
+            <a href="{% url 'users:login' %}">Click here to log in.</a>
+        {% endif %}
+    </div>
+{% endblock %}

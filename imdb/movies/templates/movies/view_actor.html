@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <br>
+        <br>
+        {% if user.is_authenticated %}
+            <div class="row">
+                <div class="col-lg-2">
+                    <h3>{{ actor.first_name }} {{ actor.last_name }}</h3>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-lg-6">
+                    <p>Birthdate: {{ actor.birthdate }}</p>
+                    <p>Sex: {{ actor.sex }}</p>
+                    <p>Alive: {{ actor.is_alive }}</p>
+                    <p>Movie: ...</p>
+                </div>
+            </div>
+                
+            
+        {% else %}
+            <a href="{% url 'users:login' %}">Click here to log in.</a>
+        {% endif %}
+    </div>
+{% endblock %}
