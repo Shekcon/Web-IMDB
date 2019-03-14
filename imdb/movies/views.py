@@ -1,6 +1,6 @@
 from django.shortcuts import render, reverse, get_object_or_404, HttpResponseRedirect
-from .forms import MovieForm, ActorForm
-from .models import Movies, Actors
+from .forms import MovieForm, ActorForm, AwardForm
+from .models import Movies, Actors, Awards
 from django.contrib.auth.decorators import login_required
 from .models import Comments
 from django.contrib.contenttypes.models import ContentType
@@ -15,7 +15,8 @@ def index(request):
     form = MovieForm()
     contents = {
         "form": form,
-        "movies_user": Movies.objects.all()
+        "movies_user": Movies.objects.all(),
+        "user": request.user
     }
     return render(request, 'movies/index.html', contents)
 
@@ -29,13 +30,14 @@ def view_movie(request, id):
                                 author=request.user,
                                 content_type=kind_type,
                                 object_id=movie.id)
-    comments = Comments.objects.filter(content_type=kind_type, object_id=movie.id).order_by('-date')
-    
+    comments = Comments.objects.filter(
+        content_type=kind_type, object_id=movie.id)
+
     contents = {
         "movie": movie,
-        "actors": ", ".join(map(str,movie.actors.all())),
+        "actors": ", ".join(map(str, movie.actors.all())),
         "comments": comments,
-        "user": str(request.user)
+        "user": request.user
     }
     return render(request, 'movies/view_movie.html', contents)
 
@@ -50,7 +52,8 @@ def update_movie(request, id):
         return HttpResponseRedirect(reverse('movies:home'))
     contents = {
         "movie": Movies.objects.get(id=id),
-        "form": form
+        "form": form,
+        "user": request.user
     }
     return render(request, 'movies/update_movie.html', contents)
 
@@ -62,7 +65,8 @@ def delete_movie(request, id):
         movie.delete()
         return HttpResponseRedirect(reverse('movies:home'))
     contents = {
-        "movie": movie
+        "movie": movie,
+        "user": request.user
     }
     return render(request, 'movies/delete_movie.html', contents)
 
@@ -70,9 +74,19 @@ def delete_movie(request, id):
 @login_required
 def view_actor(request, id):
     actor = get_object_or_404(Actors, id=id)
+    kind_type = ContentType.objects.get(model='actors')
+    if request.method == "POST":
+        Comments.objects.create(text=request.POST['comment'],
+                                author=request.user,
+                                content_type=kind_type,
+                                object_id=actor.id)
+    comments = Comments.objects.filter(
+        content_type=kind_type, object_id=actor.id)
     contents = {
         "actor": actor,
-        "movies": ", ".join(map(str, actor.movies_set.all()))
+        "movies": ", ".join(map(str, actor.movies_set.all())),
+        "comments": comments,
+        "user": request.user
     }
     return render(request, 'movies/view_actor.html', contents)
 
@@ -87,7 +101,8 @@ def update_actor(request, id):
         return HttpResponseRedirect(reverse('movies:actors'))
     contents = {
         "actor": actor,
-        "form": form
+        "form": form,
+        "user": request.user
     }
     return render(request, 'movies/update_actor.html', contents)
 
@@ -99,7 +114,8 @@ def delete_actor(request, id):
         actor.delete()
         return HttpResponseRedirect(reverse('movies:actors'))
     contents = {
-        "actor": actor
+        "actor": actor,
+        "user": request.user
     }
     return render(request, 'movies/delete_actor.html', contents)
 
@@ -113,24 +129,47 @@ def view_actors(request):
     form = ActorForm()
     contents = {
         "form": form,
-        "actors_user": Actors.objects.all()
+        "actors_user": Actors.objects.all(),
+        "user": request.user
     }
     return render(request, 'movies/actors.html', contents)
 
 
 @login_required
 def view_awards(request):
-    return render(request, 'movies/awards.html')
+    if request.method == "POST":
+        print(request.POST)
+        form = AwardForm(request.POST)
+        if form.is_valid():
+            form.save()
+            print('.....saving')
+    form = AwardForm()
+    contents = {
+        "form": form,
+        "user": request.user,
+        "movies_award": Awards.objects.filter(kind="movie"),
+        "actors_award": Awards.objects.filter(kind="actor"),
+    }
+    return render(request, 'movies/awards.html', contents)
 
 
 @login_required
-def update_comment(request):
-    print(request.POST['form_url'])
-    return HttpResponseRedirect(request.POST['request_url'])
+def update_comment(request, id):
+    comment = get_object_or_404(Comments, id=id)
+    if request.method == "POST" and request.POST.get('comment'):
+        comment.text = request.POST['comment']
+        comment.save()
+        return HttpResponseRedirect(request.POST['form_url'])
+    contents = {
+        "comment": comment,
+        "form_url": request.POST['form_url'],
+        "user": request.user
+    }
+    return render(request, 'movies/update_comment.html', contents)
+
 
 @login_required
 def delete_comment(request, id):
-    # comment = Comments.objects.get(id=id)
-    # comment.delete()
-    print(request.POST)
-    # return HttpResponseRedirect(request.POST['request_url'])
+    comment = Comments.objects.get(id=id)
+    comment.delete()
+    return HttpResponseRedirect(request.POST['form_url'])

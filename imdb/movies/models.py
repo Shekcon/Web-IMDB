@@ -49,24 +49,24 @@ class Comments(models.Model):
     date = models.DateTimeField(default=timezone.now)
 
     class Meta:
-        ordering = ["date"]
+        ordering = ["-date"]
 
     def __str__(self):
         return self.text
 
 
 class Awards(models.Model):
-    MOIVE = 0
-    ACTOR = 1
+    MOIVE = 'movie'
+    ACTOR = 'actor'
     KIND_CHOICES = (
         (MOIVE, "Movie"),
         (ACTOR, "Actor")
     )
     name = models.CharField(max_length=150, blank=False)
     kind = models.CharField(max_length=10, choices=KIND_CHOICES, default=MOIVE)
-    movie = models.ForeignKey(Movies, models.CASCADE, blank=True)
-    actor = models.ForeignKey(Actors, models.CASCADE, blank=True)
-    date = models.DateTimeField(default=timezone.now)
+    movie = models.ForeignKey(Movies, models.CASCADE, blank=True, null=True)
+    actor = models.ForeignKey(Actors, models.CASCADE, blank=True, null=True)
+    date = models.DateField(default=timezone.now)
 
     def __str__(self):
         return self.name
