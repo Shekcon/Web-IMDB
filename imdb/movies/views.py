@@ -2,6 +2,8 @@ from django.shortcuts import render, reverse, get_object_or_404, HttpResponseRed
 from .forms import MovieForm, ActorForm
 from .models import Movies, Actors
 from django.contrib.auth.decorators import login_required
+from .models import Comments
+from django.contrib.contenttypes.models import ContentType
 
 
 @login_required
@@ -21,9 +23,19 @@ def index(request):
 @login_required
 def view_movie(request, id):
     movie = get_object_or_404(Movies, id=id)
+    kind_type = ContentType.objects.get(model='movies')
+    if request.method == "POST":
+        Comments.objects.create(text=request.POST['comment'],
+                                author=request.user,
+                                content_type=kind_type,
+                                object_id=movie.id)
+    comments = Comments.objects.filter(content_type=kind_type, object_id=movie.id).order_by('-date')
+    
     contents = {
         "movie": movie,
-        "actors": ", ".join(map(str,movie.actors.all()))
+        "actors": ", ".join(map(str,movie.actors.all())),
+        "comments": comments,
+        "user": str(request.user)
     }
     return render(request, 'movies/view_movie.html', contents)
 
@@ -58,7 +70,6 @@ def delete_movie(request, id):
 @login_required
 def view_actor(request, id):
     actor = get_object_or_404(Actors, id=id)
-    # print(actor.related.all())
     contents = {
         "actor": actor,
         "movies": ", ".join(map(str, actor.movies_set.all()))
@@ -110,3 +121,16 @@ def view_actors(request):
 @login_required
 def view_awards(request):
     return render(request, 'movies/awards.html')
+
+
+@login_required
+def update_comment(request):
+    print(request.POST['form_url'])
+    return HttpResponseRedirect(request.POST['request_url'])
+
+@login_required
+def delete_comment(request, id):
+    # comment = Comments.objects.get(id=id)
+    # comment.delete()
+    print(request.POST)
+    # return HttpResponseRedirect(request.POST['request_url'])

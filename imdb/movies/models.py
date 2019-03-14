@@ -1,6 +1,8 @@
 from django.db import models
-# Create your models here.
 from django.utils import timezone
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+
 
 class Actors(models.Model):
     GENDER = (
@@ -39,14 +41,11 @@ class Movies(models.Model):
 
 
 class Comments(models.Model):
-    kind_of_comments = (
-        ('movie', 'Movie'),
-        ('actor', 'Actor')
-    )
-    kind = models.CharField(default=kind_of_comments, max_length=10)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
     text = models.TextField()
-    id_kind = models.IntegerField()
-    user = models.IntegerField()
+    author = models.CharField(max_length=150)
     date = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -57,8 +56,17 @@ class Comments(models.Model):
 
 
 class Awards(models.Model):
-    # name = models.CharField(max_length=150, blank=False)
-    # kind = models.
+    MOIVE = 0
+    ACTOR = 1
+    KIND_CHOICES = (
+        (MOIVE, "Movie"),
+        (ACTOR, "Actor")
+    )
+    name = models.CharField(max_length=150, blank=False)
+    kind = models.CharField(max_length=10, choices=KIND_CHOICES, default=MOIVE)
+    movie = models.ForeignKey(Movies, models.CASCADE, blank=True)
+    actor = models.ForeignKey(Actors, models.CASCADE, blank=True)
+    date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
